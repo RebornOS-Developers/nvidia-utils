@@ -3,8 +3,8 @@
 
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'opencl-nvidia' 'mhwd-nvidia')
-pkgver=410.57
-pkgrel=2
+pkgver=410.66
+pkgrel=1
 epoch=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -14,9 +14,9 @@ source=('mhwd-nvidia' 'nvidia-drm-outputclass.conf' 'nvidia-utils.sysusers')
 durl="http://us.download.nvidia.com/XFree86/Linux-x86"
 source_x86_64=("${durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run")
 sha256sums=('11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
-            'b3063c332614d449316da92d39f807cb6e5a3d5400692d0c1333ab24832f73ac'
+            '4dc6c12db198d673c9826e243efdcc9e747c01dba96900325e9816726c216092'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167')
-sha256sums_x86_64=('1ad40d83ec712843c1b5593949abefc9093399fb26a418ae9a571fbd1d9b228e')
+sha256sums_x86_64=('c4e297ed93341841c7ccb32569c179baecbb6ea253215cbc3668a51d729227cd')
 
 [[ "$CARCH" = "x86_64" ]] && _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 
