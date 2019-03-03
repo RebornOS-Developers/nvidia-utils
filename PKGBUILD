@@ -3,8 +3,8 @@
 
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'opencl-nvidia' 'mhwd-nvidia')
-pkgver=415.27
-pkgrel=1
+pkgver=418.43
+pkgrel=2
 epoch=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -16,7 +16,7 @@ source_x86_64=("${durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.r
 sha256sums=('11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '4dc6c12db198d673c9826e243efdcc9e747c01dba96900325e9816726c216092'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167')
-sha256sums_x86_64=('0882f8e8fb3110c180edffeca23b49600bf11dd62ef72eb5db1cf9acb4fa8ccf')
+sha256sums_x86_64=('55cb410c5337f46a48636c2bd5ecb42bf1f4367059394e374b16a8f067de3187')
 
 [[ "$CARCH" = "x86_64" ]] && _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 
@@ -100,9 +100,6 @@ package_nvidia-utils() {
     ln -s "libglxserver_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/nvidia/xorg/libglx.so"
     install -D -m755 "libGLX_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/libGLX_nvidia.so.${pkgver}"
 
-    # X wrapped software rendering
-    install -D -m755 "libnvidia-wfb.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-wfb.so.${pkgver}"
-
     # OpenGL library
     install -D -m755 "libGL.so.1.7.0" "${pkgdir}/usr/lib/nvidia/libGL.so.1.7.0"
     install -D -m755 "libEGL.so.1.1.0" "${pkgdir}/usr/lib/nvidia/libEGL.so.1.1.0"
@@ -148,6 +145,9 @@ package_nvidia-utils() {
     install -D -m755 "libnvoptix.so.${pkgver}" "${pkgdir}/usr/lib/libnvoptix.so.${pkgver}"
     install -D -m755 "libnvidia-rtcore.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-rtcore.so.${pkgver}"
     install -D -m755 "libnvidia-cbl.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-cbl.so.${pkgver}"
+
+    # Optical flow
+    install -D -m755 "libnvidia-opticalflow.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-opticalflow.so.${pkgver}"
 
     # DEBUG
     install -D -m755 nvidia-debugdump "${pkgdir}/usr/bin/nvidia-debugdump"
