@@ -6,7 +6,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=435.17
-pkgrel=1
+pkgrel=2
 epoch=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -15,7 +15,7 @@ options=('!strip')
 source=('mhwd-nvidia' 'nvidia-drm-outputclass.conf' 'nvidia-utils.sysusers')
 source_x86_64=("http://download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run")
 sha256sums=('11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
-            '4dc6c12db198d673c9826e243efdcc9e747c01dba96900325e9816726c216092'
+            'adb89c9ecc7027fceaf6e7af16c7715fe85aa900b3dc2bbb71f64b9d63caa1b8'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167')
 sha256sums_x86_64=('1d5e23663c8730f6c8035debe728a18da112e3d0a12a859f76e0b16132c33162')
 
@@ -234,9 +234,15 @@ package_nvidia-utils() {
     install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/nvidia/LICENSE"
     ln -s nvidia "${pkgdir}/usr/share/doc/nvidia-utils"
 
+    # new power management support
+    install -D -m644 nvidia-suspend.service   -t "${pkgdir}/usr/lib/systemd/system"
+    install -D -m644 nvidia-hibernate.service -t "${pkgdir}/usr/lib/systemd/system"
+    install -D -m644 nvidia-resume.service    -t "${pkgdir}/usr/lib/systemd/system"
+    install -D -m755 nvidia                   -t "${pkgdir}/usr/lib/systemd/system-sleep"
+    install -D -m755 nvidia-sleep.sh          -t "${pkgdir}/usr/bin"
+
     # distro specific files must be installed in /usr/share/X11/xorg.conf.d
     install -m755 -d "${pkgdir}/usr/share/X11/xorg.conf.d"
     install -m644 "${srcdir}/nvidia-drm-outputclass.conf" "${pkgdir}/usr/share/X11/xorg.conf.d/10-nvidia-drm-outputclass.conf"
-
     install -Dm644 "${srcdir}/nvidia-utils.sysusers" "${pkgdir}/usr/lib/sysusers.d/$pkgname.conf"
 }
