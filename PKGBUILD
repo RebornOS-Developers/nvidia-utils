@@ -6,7 +6,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=435.17
-pkgrel=2
+pkgrel=3
 epoch=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -230,6 +230,9 @@ package_nvidia-utils() {
     cd "${_pkg}"
 
     process_manifest
+
+    # cleanup for fileconflict
+    rm -v "${pkgdir}"/usr/lib/libnvidia-egl-wayland.so*
 
     install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/nvidia/LICENSE"
     ln -s nvidia "${pkgdir}/usr/share/doc/nvidia-utils"
