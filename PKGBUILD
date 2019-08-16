@@ -6,7 +6,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=435.17
-pkgrel=3
+pkgrel=4
 epoch=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -15,7 +15,7 @@ options=('!strip')
 source=('mhwd-nvidia' 'nvidia-drm-outputclass.conf' 'nvidia-utils.sysusers')
 source_x86_64=("http://download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run")
 sha256sums=('11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
-            'adb89c9ecc7027fceaf6e7af16c7715fe85aa900b3dc2bbb71f64b9d63caa1b8'
+            'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167')
 sha256sums_x86_64=('1d5e23663c8730f6c8035debe728a18da112e3d0a12a859f76e0b16132c33162')
 
