@@ -6,17 +6,20 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=435.17
-pkgrel=5
+pkgrel=6
 epoch=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
 options=('!strip')
-source=('mhwd-nvidia' 'nvidia-drm-outputclass.conf' 'nvidia-utils.sysusers')
+source=('mhwd-nvidia' 'nvidia-utils.sysusers' '90-nvidia-utils.hook'
+        '10-amdgpu-nvidia-drm-outputclass.conf' '10-intel-nvidia-drm-outputclass.conf')
 source_x86_64=("http://download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run")
 sha256sums=('11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
-            'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3'
-            'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167')
+            'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
+            'b28bc06789554718e68e7b011bfa50f8813fee6ed0fb5606f11d897c9672b7d7'
+            '3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
+            'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3')
 sha256sums_x86_64=('1d5e23663c8730f6c8035debe728a18da112e3d0a12a859f76e0b16132c33162')
 
 _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
@@ -243,8 +246,14 @@ package_nvidia-utils() {
     install -D -m755 nvidia                   -t "${pkgdir}/usr/lib/systemd/system-sleep"
     install -D -m755 nvidia-sleep.sh          -t "${pkgdir}/usr/bin"
 
+    # systemd config
+    install -Dm644 "${srcdir}/nvidia-utils.sysusers" "${pkgdir}/usr/lib/sysusers.d/$pkgname.conf"
+
     # distro specific files must be installed in /usr/share/X11/xorg.conf.d
     install -m755 -d "${pkgdir}/usr/share/X11/xorg.conf.d"
-    install -m644 "${srcdir}/nvidia-drm-outputclass.conf" "${pkgdir}/usr/share/X11/xorg.conf.d/10-nvidia-drm-outputclass.conf"
-    install -Dm644 "${srcdir}/nvidia-utils.sysusers" "${pkgdir}/usr/lib/sysusers.d/$pkgname.conf"
+    install -m644 "${srcdir}/10-amdgpu-nvidia-drm-outputclass.conf" "${pkgdir}/usr/share/X11/xorg.conf.d/10-amdgpu-nvidia-drm-outputclass.conf"
+    install -m644 "${srcdir}/10-intel-nvidia-drm-outputclass.conf" "${pkgdir}/usr/share/X11/xorg.conf.d/10-intel-nvidia-drm-outputclass.conf"
+
+    # install alpm hook
+    install -Dm644 "${srcdir}/90-nvidia-utils.hook" "${pkgdir}/usr/share/libalpm/hooks/90-nvidia-utils.hook"
 }

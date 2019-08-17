@@ -1,0 +1,10 @@
+[Trigger]
+Type = File
+Operation = Install
+Operation = Upgrade
+Target = usr/lib/modules/*/nvidia-drm*
+
+[Action]
+Description = Updating Kernel initcpios for Nvidia-DRM...
+When = PostTransaction
+Exec = /usr/bin/mkinitcpio -P
