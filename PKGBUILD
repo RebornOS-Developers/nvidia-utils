@@ -6,7 +6,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=435.17
-pkgrel=4
+pkgrel=5
 epoch=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -62,11 +62,9 @@ process_manifest () {
         ["VDPAU_SYMLINK"]="nvidia-utils symlink_lib_with_path"
         ["VULKAN_ICD_JSON"]="nvidia-utils install_vulkan_json"
         ["XMODULE_SHARED_LIB"]="nvidia-utils install_x_driver"
-        ["XORG_OUTPUTCLASS_CONFIG"]="nvidia-utils install_x_config"
 
         # Ignored entries
-        ["DKMS_CONF"]="ignored"                 # dkms isn't needed with Arch's version-locked packages
-        #["DOT_DESKTOP"]="ignored"               # Use the separate Arch nvidia-settings package.
+        ["DKMS_CONF"]="ignored"                 # dkms isn't needed with Manjaro's version-locked packages
         ["EGL_CLIENT_LIB"]="ignored"            # provided by libglvnd
         ["EGL_CLIENT_SYMLINK"]="ignored"        # provided by libglvnd
         ["GLVND_LIB"]="ignored"                 # provided by libglvnd
@@ -85,6 +83,7 @@ process_manifest () {
         ["VDPAU_WRAPPER_SYMLINK"]="ignored"     # provided by libvdpau
         ["XMODULE_NEWSYM"]="ignored"            # not needed for modern X servers
         ["XMODULE_SYMLINK"]="ignored"           # not needed for modern X servers
+        ["XORG_OUTPUTCLASS_CONFIG"]="ignored"   # provided by nvidia-utils
         ["EGL_EXTERNAL_PLATFORM_JSON"]="ignored" # TODO: Install this somewhere
     )
 
