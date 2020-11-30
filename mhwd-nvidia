@@ -73,8 +73,8 @@ device_ids() {
     while read id; do
       printf "$id "
     done <"$readme_list"
-    # fix Geforce mobile
-    printf "1140" <"$readme_list"
+    # fix Geforce mobile + Quadro K3100M
+    printf "1140 11a0 11b6" <"$readme_list"
 
     ret=0
   fi

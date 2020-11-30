@@ -1,27 +1,36 @@
-# Maintainer: Philip Müller <philm[at]manjaro[dog]org>
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+# Maintainer: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Maintainer: Helmut Stult <helmut[at]manjaro[dot]org>
+
+# Arch credits:
 # Contributor: Sven-Hendrik Haase <sh@lutzhaase.com>
 # Contributor: Thomas Baechler <thomas@archlinux.org>
 # Contributor: James Rayner <iphitus@gmail.com>
 
+_nver=455xx
 pkgbase=nvidia-utils
-pkgname=('nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
-pkgver=430.40
-pkgrel=1
-epoch=2
+pkgname=("nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
+pkgver=455.45.01
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
 options=('!strip')
-source=('mhwd-nvidia' 'nvidia-drm-outputclass.conf' 'nvidia-utils.sysusers' '90-nvidia-utils.hook')
-durl="http://us.download.nvidia.com/XFree86/Linux-x86"
-source_x86_64=("${durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run")
-sha256sums=('11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
-            '4dc6c12db198d673c9826e243efdcc9e747c01dba96900325e9816726c216092'
+durl="https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}"
+source=("${durl}/NVIDIA-Linux-x86_64-$pkgver-no-compat32.run"
+        'mhwd-nvidia'
+        'nvidia-utils.sysusers'
+        '90-nvidia-utils.hook'
+        '10-amdgpu-nvidia-drm-outputclass.conf'
+        '10-intel-nvidia-drm-outputclass.conf')
+sha256sums=('9b707d6244735cf0f745a74c47ed0feeec47bc56baec8122306dee6169ce10fd'
+            'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
-            'b28bc06789554718e68e7b011bfa50f8813fee6ed0fb5606f11d897c9672b7d7')
-sha256sums_x86_64=('669ff38532ff05c78e1edc3c6df2055fd96437107f5919b6e5a774c3a495501b')
+            '2d2e36e5f241e1ee9aac04bd557ac0df63cee64f6c930d27538f52c949c4287d'
+            '3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
+            'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3')
 
-[[ "$CARCH" = "x86_64" ]] && _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
+_pkg="NVIDIA-Linux-x86_64-$pkgver-no-compat32"
 
 create_links() {
     # create soname links
@@ -35,11 +44,24 @@ create_links() {
 
 prepare() {
     sh "${_pkg}.run" --extract-only
-
     cd "${_pkg}"
     bsdtar -xf nvidia-persistenced-init.tar.bz2
 
-    sed -i 's/__NV_VK_ICD__/libGLX_nvidia.so.0/' nvidia_icd.json.template
+    cd kernel
+    sed -i "s/__VERSION_STRING/${pkgver}/" dkms.conf
+    sed -i 's/__JOBS/`nproc`/' dkms.conf
+    sed -i 's/__DKMS_MODULES//' dkms.conf
+    sed -i '$iBUILT_MODULE_NAME[0]="nvidia"\
+DEST_MODULE_LOCATION[0]="/kernel/drivers/video"\
+BUILT_MODULE_NAME[1]="nvidia-uvm"\
+DEST_MODULE_LOCATION[1]="/kernel/drivers/video"\
+BUILT_MODULE_NAME[2]="nvidia-modeset"\
+DEST_MODULE_LOCATION[2]="/kernel/drivers/video"\
+BUILT_MODULE_NAME[3]="nvidia-drm"\
+DEST_MODULE_LOCATION[3]="/kernel/drivers/video"' dkms.conf
+
+    # Gift for linux-rt guys
+    sed -i 's/NV_EXCLUDE_BUILD_MODULES/IGNORE_PREEMPT_RT_PRESENCE=1 NV_EXCLUDE_BUILD_MODULES/' dkms.conf
 }
 
 package_opencl-nvidia() {
@@ -47,7 +69,11 @@ package_opencl-nvidia() {
     depends=('zlib')
     optdepends=('opencl-headers: headers necessary for OpenCL development')
     provides=("opencl-nvidia=$pkgver" 'opencl-driver')
-    cd "${_pkg}"
+    conflicts=('opencl-nvidia-340xx' 'opencl-nvidia-390xx' 
+               'opencl-nvidia-418xx' 'opencl-nvidia-430xx'
+               'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
+               'opencl-nvidia-450xx')
+    cd $_pkg
 
     # OpenCL
     install -D -m644 nvidia.icd "${pkgdir}/etc/OpenCL/vendors/nvidia.icd"
@@ -57,38 +83,37 @@ package_opencl-nvidia() {
     create_links
 
     mkdir -p "${pkgdir}/usr/share/licenses"
-    ln -s nvidia "${pkgdir}/usr/share/licenses/opencl-nvidia"
+    ln -s nvidia-utils "${pkgdir}/usr/share/licenses/opencl-nvidia"
 }
-
 
 package_mhwd-nvidia() {
     pkgdesc="MHWD module-ids for nvidia $pkgver"
     arch=('any')
 
-    install -d -m755 "${pkgdir}/var/lib/mhwd/ids/pci/"
+    install -d -m755 "$pkgdir/var/lib/mhwd/ids/pci/"
 
     # Generate mhwd database
-    sh -e ${srcdir}/mhwd-nvidia \
-    ${srcdir}/${_pkg}/README.txt \
-    ${srcdir}/${_pkg}/kernel/nvidia/nv-kernel.o_binary \
-    > ${pkgdir}/var/lib/mhwd/ids/pci/nvidia.ids
+    sh -e $srcdir/mhwd-nvidia \
+    $srcdir/$_pkg/README.txt \
+    $srcdir/$_pkg/kernel/nvidia/nv-kernel.o_binary \
+    > $pkgdir/var/lib/mhwd/ids/pci/nvidia.ids
     # add PCIID: 1b82 Nvidia Gforce 1070 Ti
-    sed -i 's/1b81 1b84/1b81 1b82 1b84/g' ${pkgdir}/var/lib/mhwd/ids/pci/nvidia.ids
+    sed -i 's/1b81 1b84/1b81 1b82 1b84/g' $pkgdir/var/lib/mhwd/ids/pci/nvidia.ids
 }
-
 
 package_nvidia-utils() {
     pkgdesc="NVIDIA drivers utilities"
-    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'mhwd')
-    optdepends=('gtk2: nvidia-settings'
+    depends=('xorg-server')
+    optdepends=('gtk3: nvidia-settings'
                 'xorg-server-devel: nvidia-xconfig'
                 'opencl-nvidia: OpenCL support')
     provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=$pkgver")
-    conflicts=('nvidia-libgl')
+    conflicts=('nvidia-libgl' 'nvidia-340xx-utils' 'nvidia-390xx-utils'
+               'nvidia-418xx-utils' 'nvidia-430xx-utils' 'nvidia-435xx-utils'
+               'nvidia-440xx-utils' 'nvidia-450xx-utils')
     replaces=('nvidia-libgl')
-    install="${pkgname}.install"
-
-    cd "${_pkg}"
+    install="$pkgname.install"
+    cd "$_pkg"
 
     # X driver
     install -D -m755 nvidia_drv.so "${pkgdir}/usr/lib/xorg/modules/drivers/nvidia_drv.so"
@@ -98,14 +123,10 @@ package_nvidia-utils() {
     # Ensure that X finds glx
     ln -s "libglxserver_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/nvidia/xorg/libglxserver_nvidia.so.1"
     ln -s "libglxserver_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/nvidia/xorg/libglxserver_nvidia.so"
-    ln -s "libglxserver_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/nvidia/xorg/libglx.so.${pkgver}"
-    ln -s "libglxserver_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/nvidia/xorg/libglx.so.1"
-    ln -s "libglxserver_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/nvidia/xorg/libglx.so"
+
     install -D -m755 "libGLX_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/libGLX_nvidia.so.${pkgver}"
 
-    # OpenGL library
-    install -D -m755 "libGL.so.1.7.0" "${pkgdir}/usr/lib/nvidia/libGL.so.1.7.0"
-    install -D -m755 "libEGL.so.1.1.0" "${pkgdir}/usr/lib/nvidia/libEGL.so.1.1.0"
+    # OpenGL libraries
     install -D -m755 "libEGL_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/libEGL_nvidia.so.${pkgver}"
     install -D -m755 "libGLESv1_CM_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/libGLESv1_CM_nvidia.so.${pkgver}"
     install -D -m755 "libGLESv2_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/libGLESv2_nvidia.so.${pkgver}"
@@ -122,11 +143,12 @@ package_nvidia-utils() {
     install -D -m755 "libnvidia-encode.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-encode.so.${pkgver}"
     install -D -m755 "libnvidia-cfg.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-cfg.so.${pkgver}"
     install -D -m755 "libnvidia-ml.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-ml.so.${pkgver}"
+    install -D -m755 "libnvidia-ngx.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-ngx.so.${pkgver}"
     install -D -m755 "libnvidia-glvkspirv.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-glvkspirv.so.${pkgver}"
 
-    # Vulkan
-    install -D -m644 "nvidia_icd.json.template" "${pkgdir}/usr/share/vulkan/icd.d/nvidia_icd.json"
-    install -D -m755 "libnvidia-glvkspirv.so.$pkgver" "${pkgdir}/usr/lib/libnvidia-glvkspirv.so.${pkgver}"
+    # Vulkan ICD
+    install -D -m644 "nvidia_icd.json" "${pkgdir}/usr/share/vulkan/icd.d/nvidia_icd.json"
+    install -D -m644 "nvidia_layers.json" "${pkgdir}/usr/share/vulkan/implicit_layer.d/nvidia_layers.json"
 
     # VDPAU
     install -D -m755 "libvdpau_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/vdpau/libvdpau_nvidia.so.${pkgver}"
@@ -140,9 +162,6 @@ package_nvidia-utils() {
 
     # PTX JIT Compiler (Parallel Thread Execution (PTX) is a pseudo-assembly language for CUDA)
     install -D -m755 "libnvidia-ptxjitcompiler.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-ptxjitcompiler.so.${pkgver}"
-
-    # Fat (multiarchitecture) binary loader
-    install -D -m755 "libnvidia-fatbinaryloader.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-fatbinaryloader.so.${pkgver}"
 
     # raytracing
     install -D -m755 "libnvoptix.so.${pkgver}" "${pkgdir}/usr/lib/libnvoptix.so.${pkgver}"
@@ -195,29 +214,32 @@ package_nvidia-utils() {
     install -D -m644 nvidia-application-profiles-${pkgver}-rc "${pkgdir}/usr/share/nvidia/nvidia-application-profiles-${pkgver}-rc"
     install -D -m644 nvidia-application-profiles-${pkgver}-key-documentation "${pkgdir}/usr/share/nvidia/nvidia-application-profiles-${pkgver}-key-documentation"
 
-    install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/nvidia/LICENSE"
-    ln -s nvidia "${pkgdir}/usr/share/licenses/nvidia-utils"
+    install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/nvidia-utils/LICENSE"
     install -D -m644 README.txt "${pkgdir}/usr/share/doc/nvidia/README"
     install -D -m644 NVIDIA_Changelog "${pkgdir}/usr/share/doc/nvidia/NVIDIA_Changelog"
     cp -r html "${pkgdir}/usr/share/doc/nvidia/"
     ln -s nvidia "${pkgdir}/usr/share/doc/nvidia-utils"
 
+    install -D -m644 LICENSE "$pkgdir/usr/share/licenses/nvidia/LICENSE"
+    ln -s nvidia "$pkgdir/usr/share/doc/nvidia-utils"
+
     # new power management support
-    install -D -m644 nvidia-suspend.service   -t "${pkgdir}/usr/lib/systemd/system"
-    install -D -m644 nvidia-hibernate.service -t "${pkgdir}/usr/lib/systemd/system"
-    install -D -m644 nvidia-resume.service    -t "${pkgdir}/usr/lib/systemd/system"
-    install -D -m755 nvidia                   -t "${pkgdir}/usr/lib/systemd/system-sleep"
-    install -D -m755 nvidia-sleep.sh          -t "${pkgdir}/usr/bin"
+    install -D -m644 nvidia-suspend.service   -t "$pkgdir/usr/lib/systemd/system"
+    install -D -m644 nvidia-hibernate.service -t "$pkgdir/usr/lib/systemd/system"
+    install -D -m644 nvidia-resume.service    -t "$pkgdir/usr/lib/systemd/system"
+    install -D -m755 nvidia                   -t "$pkgdir/usr/lib/systemd/system-sleep"
+    install -D -m755 nvidia-sleep.sh          -t "$pkgdir/usr/bin"
 
     # systemd config
-    install -Dm644 "${srcdir}/nvidia-utils.sysusers" "${pkgdir}/usr/lib/sysusers.d/$pkgname.conf"
+    install -Dm644 "$srcdir/nvidia-utils.sysusers" "$pkgdir/usr/lib/sysusers.d/$pkgname.conf"
 
     # distro specific files must be installed in /usr/share/X11/xorg.conf.d
-    install -m755 -d "${pkgdir}/usr/share/X11/xorg.conf.d"
-    install -m644 "${srcdir}/nvidia-drm-outputclass.conf" "${pkgdir}/usr/share/X11/xorg.conf.d/10-nvidia-drm-outputclass.conf"
+    install -m755 -d "$pkgdir/usr/share/X11/xorg.conf.d"
+    install -m644 "$srcdir/10-amdgpu-nvidia-drm-outputclass.conf" "$pkgdir/usr/share/X11/xorg.conf.d/10-amdgpu-nvidia-drm-outputclass.conf"
+    install -m644 "$srcdir/10-intel-nvidia-drm-outputclass.conf" "$pkgdir/usr/share/X11/xorg.conf.d/10-intel-nvidia-drm-outputclass.conf"
 
     # install alpm hook
-    install -Dm644 "${srcdir}/90-nvidia-utils.hook" "${pkgdir}/usr/share/libalpm/hooks/90-nvidia-utils.hook"
-
+    install -Dm644 "$srcdir/90-nvidia-utils.hook" "$pkgdir/usr/share/libalpm/hooks/90-nvidia-utils.hook"
+    
     create_links
 }
