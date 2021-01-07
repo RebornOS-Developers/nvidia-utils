@@ -7,11 +7,10 @@
 # Contributor: Thomas Baechler <thomas@archlinux.org>
 # Contributor: James Rayner <iphitus@gmail.com>
 
-_nver=455xx
 pkgbase=nvidia-utils
 pkgname=("nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
-pkgver=455.45.01
-pkgrel=2
+pkgver=460.32.03
+pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -23,7 +22,7 @@ source=("${durl}/NVIDIA-Linux-x86_64-$pkgver-no-compat32.run"
         '90-nvidia-utils.hook'
         '10-amdgpu-nvidia-drm-outputclass.conf'
         '10-intel-nvidia-drm-outputclass.conf')
-sha256sums=('9b707d6244735cf0f745a74c47ed0feeec47bc56baec8122306dee6169ce10fd'
+sha256sums=('45aa9d75e8d463d87dcf7ea78a1ea046b9ddc2e159dfab6e861cbf833e6b14cf'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             '2d2e36e5f241e1ee9aac04bd557ac0df63cee64f6c930d27538f52c949c4287d'
@@ -92,6 +91,9 @@ package_opencl-nvidia() {
 package_mhwd-nvidia() {
     pkgdesc="MHWD module-ids for nvidia $pkgver"
     arch=('any')
+    replaces=('mhwd-nvidia-418xx' 'mhwd-nvidia-430xx'
+              'mhwd-nvidia-435xx' 'mhwd-nvidia-440xx'
+              'mhwd-nvidia-450xx' 'mhwd-nvidia-455xx')
 
     install -d -m755 "$pkgdir/var/lib/mhwd/ids/pci/"
 
