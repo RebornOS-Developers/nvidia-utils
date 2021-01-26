@@ -9,7 +9,7 @@
 
 pkgbase=nvidia-utils
 pkgname=("nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
-pkgver=460.32.03
+pkgver=460.39
 pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
