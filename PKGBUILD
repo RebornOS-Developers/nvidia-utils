@@ -22,7 +22,7 @@ source=("${durl}/NVIDIA-Linux-x86_64-$pkgver-no-compat32.run"
         '90-nvidia-utils.hook'
         '10-amdgpu-nvidia-drm-outputclass.conf'
         '10-intel-nvidia-drm-outputclass.conf')
-sha256sums=('45aa9d75e8d463d87dcf7ea78a1ea046b9ddc2e159dfab6e861cbf833e6b14cf'
+sha256sums=('07042bd0c2f5c37b455a973f15561450f789590b8650a6ea573c819591d572a9'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             '2d2e36e5f241e1ee9aac04bd557ac0df63cee64f6c930d27538f52c949c4287d'
