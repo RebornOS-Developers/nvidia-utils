@@ -8,7 +8,7 @@
 # Contributor: James Rayner <iphitus@gmail.com>
 
 pkgbase=nvidia-utils
-pkgname=("nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
+pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
 pkgver=460.56
 pkgrel=1
 arch=('x86_64')
@@ -61,6 +61,22 @@ DEST_MODULE_LOCATION[3]="/kernel/drivers/video"' dkms.conf
 
     # Gift for linux-rt guys
     sed -i 's/NV_EXCLUDE_BUILD_MODULES/IGNORE_PREEMPT_RT_PRESENCE=1 NV_EXCLUDE_BUILD_MODULES/' dkms.conf
+}
+
+package_nvidia-dkms() {
+    pkgdesc="NVIDIA drivers - module sources"
+    depends=('dkms' "nvidia-utils=$pkgver" 'libglvnd')
+    provides=('NVIDIA-MODULE' "nvidia=$pkgver")
+
+    cd ${_pkg}
+
+    install -dm 755 "${pkgdir}"/usr/src
+    cp -dr --no-preserve='ownership' kernel "${pkgdir}/usr/src/nvidia-${pkgver}"
+
+    echo "blacklist nouveau" |
+        install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modprobe.d/${pkgname}.conf"
+
+    install -Dt "${pkgdir}/usr/share/licenses/${pkgname}" -m644 "${srcdir}/${_pkg}/LICENSE"
 }
 
 package_opencl-nvidia() {
