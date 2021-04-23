@@ -9,8 +9,8 @@
 
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
-pkgver=465.24.02
-pkgrel=2
+pkgver=460.73.01
+pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -22,7 +22,7 @@ source=("${durl}/NVIDIA-Linux-x86_64-$pkgver-no-compat32.run"
         '90-nvidia-utils.hook'
         '10-amdgpu-nvidia-drm-outputclass.conf'
         '10-intel-nvidia-drm-outputclass.conf')
-sha256sums=('a1f6c50de475a5b9dda10285d9ff1eaafe921c640038e47249ac7839ee94ad6d'
+sha256sums=('aed95f08df638025b68e9f6551ebf7c31d802fe5c87588219fb602f5a4ea0544'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             'c2396f48835caf7ae60bc17e07eeaf142c8b7074d15d428d6c61d9e38373b8d8'
@@ -247,11 +247,11 @@ package_nvidia-utils() {
     ln -s nvidia "$pkgdir/usr/share/doc/nvidia-utils"
 
     # new power management support
-    install -D -m644 systemd/system/nvidia-suspend.service   -t "$pkgdir/usr/lib/systemd/system"
-    install -D -m644 systemd/system/nvidia-hibernate.service -t "$pkgdir/usr/lib/systemd/system"
-    install -D -m644 systemd/system/nvidia-resume.service    -t "$pkgdir/usr/lib/systemd/system"
-    install -D -m755 systemd/system-sleep/nvidia             -t "$pkgdir/usr/lib/systemd/system-sleep"
-    install -D -m755 systemd/nvidia-sleep.sh                 -t "$pkgdir/usr/bin"
+    install -D -m644 nvidia-suspend.service   -t "$pkgdir/usr/lib/systemd/system"
+    install -D -m644 nvidia-hibernate.service -t "$pkgdir/usr/lib/systemd/system"
+    install -D -m644 nvidia-resume.service    -t "$pkgdir/usr/lib/systemd/system"
+    install -D -m755 nvidia                   -t "$pkgdir/usr/lib/systemd/system-sleep"
+    install -D -m755 nvidia-sleep.sh          -t "$pkgdir/usr/bin"
 
     # systemd config
     install -Dm644 "$srcdir/nvidia-utils.sysusers" "$pkgdir/usr/lib/sysusers.d/$pkgname.conf"
@@ -264,8 +264,6 @@ package_nvidia-utils() {
     # install alpm hook
     install -Dm644 "$srcdir/90-nvidia-utils.hook" "$pkgdir/usr/share/libalpm/hooks/90-nvidia-utils.hook"
     
-    # install firmware
-    install -D -m644 firmware/gsp.bin "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}/gsp.bin"
-    
     create_links
 }
+
