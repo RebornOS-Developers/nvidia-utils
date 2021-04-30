@@ -86,11 +86,13 @@ package_opencl-nvidia() {
     provides=("opencl-nvidia=$pkgver" 'opencl-driver')
     replaces=('opencl-nvidia-418xx' 'opencl-nvidia-430xx'
               'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
-              'opencl-nvidia-450xx' 'opencl-nvidia-455xx')
+              'opencl-nvidia-450xx' 'opencl-nvidia-455xx'
+              'opencl-nvidia-460xx')
     conflicts=('opencl-nvidia-340xx' 'opencl-nvidia-390xx' 
                'opencl-nvidia-418xx' 'opencl-nvidia-430xx'
                'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
-               'opencl-nvidia-450xx' 'opencl-nvidia-455xx')
+               'opencl-nvidia-450xx' 'opencl-nvidia-455xx'
+               'opencl-nvidia-460xx')
     cd $_pkg
 
     # OpenCL
@@ -109,7 +111,8 @@ package_mhwd-nvidia() {
     arch=('any')
     replaces=('mhwd-nvidia-418xx' 'mhwd-nvidia-430xx'
               'mhwd-nvidia-435xx' 'mhwd-nvidia-440xx'
-              'mhwd-nvidia-450xx' 'mhwd-nvidia-455xx')
+              'mhwd-nvidia-450xx' 'mhwd-nvidia-455xx'
+              'mhwd-nvidia-460xx')
 
     install -d -m755 "$pkgdir/var/lib/mhwd/ids/pci/"
 
