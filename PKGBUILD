@@ -9,7 +9,7 @@
 
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
-pkgver=465.27
+pkgver=465.31
 pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -22,7 +22,7 @@ source=("${durl}/NVIDIA-Linux-x86_64-$pkgver-no-compat32.run"
         '90-nvidia-utils.hook'
         '10-amdgpu-nvidia-drm-outputclass.conf'
         '10-intel-nvidia-drm-outputclass.conf')
-sha256sums=('9e6a65aa89de89980e70ab23cf8d3394ed28e98fa9c38bf0403e59a2fcaaf362'
+sha256sums=('2d423f1299561f770b2c1195f310c0bc9a4ce7b7095327b7cf67a3efc340ea58'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             'c2396f48835caf7ae60bc17e07eeaf142c8b7074d15d428d6c61d9e38373b8d8'
