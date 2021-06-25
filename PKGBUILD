@@ -9,27 +9,27 @@
 
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
-pkgver=465.31
-pkgrel=1
+pkgver=470.42.01
+pkgrel=0
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
 options=('!strip')
 durl="https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}"
-source=("${durl}/NVIDIA-Linux-x86_64-$pkgver-no-compat32.run"
+source=("${durl}/NVIDIA-Linux-x86_64-$pkgver.run"
         'mhwd-nvidia'
         'nvidia-utils.sysusers'
         '90-nvidia-utils.hook'
         '10-amdgpu-nvidia-drm-outputclass.conf'
         '10-intel-nvidia-drm-outputclass.conf')
-sha256sums=('2d423f1299561f770b2c1195f310c0bc9a4ce7b7095327b7cf67a3efc340ea58'
+sha256sums=('cdf554eafd5ccea00cd0e961e26337b7e8337ac8a2ad57ef019cfb3d62b58913'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             'c2396f48835caf7ae60bc17e07eeaf142c8b7074d15d428d6c61d9e38373b8d8'
             '3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3')
 
-_pkg="NVIDIA-Linux-x86_64-$pkgver-no-compat32"
+_pkg="NVIDIA-Linux-x86_64-$pkgver"
 
 create_links() {
     # create soname links
@@ -42,8 +42,11 @@ create_links() {
 }
 
 prepare() {
+    [ -d "$_pkg" ] && rm -rf "$_pkg"
+
     sh "${_pkg}.run" --extract-only
     cd "${_pkg}"
+
     bsdtar -xf nvidia-persistenced-init.tar.bz2
 
     cd kernel
@@ -57,7 +60,9 @@ DEST_MODULE_LOCATION[1]="/kernel/drivers/video"\
 BUILT_MODULE_NAME[2]="nvidia-modeset"\
 DEST_MODULE_LOCATION[2]="/kernel/drivers/video"\
 BUILT_MODULE_NAME[3]="nvidia-drm"\
-DEST_MODULE_LOCATION[3]="/kernel/drivers/video"' dkms.conf
+DEST_MODULE_LOCATION[3]="/kernel/drivers/video"\
+BUILT_MODULE_NAME[4]="nvidia-peermem"\
+DEST_MODULE_LOCATION[4]="/kernel/drivers/video"' dkms.conf
 
     # Gift for linux-rt guys
     sed -i 's/NV_EXCLUDE_BUILD_MODULES/IGNORE_PREEMPT_RT_PRESENCE=1 NV_EXCLUDE_BUILD_MODULES/' dkms.conf
@@ -87,12 +92,12 @@ package_opencl-nvidia() {
     replaces=('opencl-nvidia-418xx' 'opencl-nvidia-430xx'
               'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
               'opencl-nvidia-450xx' 'opencl-nvidia-455xx'
-              'opencl-nvidia-460xx')
+              'opencl-nvidia-460xx' 'opencl-nvidia-465xx')
     conflicts=('opencl-nvidia-340xx' 'opencl-nvidia-390xx' 
                'opencl-nvidia-418xx' 'opencl-nvidia-430xx'
                'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
                'opencl-nvidia-450xx' 'opencl-nvidia-455xx'
-               'opencl-nvidia-460xx')
+               'opencl-nvidia-460xx' 'opencl-nvidia-465xx')
     cd $_pkg
 
     # OpenCL
@@ -112,7 +117,7 @@ package_mhwd-nvidia() {
     replaces=('mhwd-nvidia-418xx' 'mhwd-nvidia-430xx'
               'mhwd-nvidia-435xx' 'mhwd-nvidia-440xx'
               'mhwd-nvidia-450xx' 'mhwd-nvidia-455xx'
-              'mhwd-nvidia-460xx')
+              'mhwd-nvidia-460xx' 'mhwd-nvidia-465xx')
 
     install -d -m755 "$pkgdir/var/lib/mhwd/ids/pci/"
 
@@ -197,6 +202,13 @@ package_nvidia-utils() {
     # Optical flow
     install -D -m755 "libnvidia-opticalflow.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-opticalflow.so.${pkgver}"
 
+    # wine nvngx lib
+    install -D -m755 "_nvngx.dll" -t "${pkgdir}/usr/lib/nvidia/wine"
+    install -D -m755 "nvngx.dll" -t "${pkgdir}/usr/lib/nvidia/wine"
+
+    # nvvm
+    install -D -m755 "libnvidia-nvvm.so.4.0.0" -t "${pkgdir}/usr/lib"
+     
     # DEBUG
     install -D -m755 nvidia-debugdump "${pkgdir}/usr/bin/nvidia-debugdump"
 
@@ -268,7 +280,7 @@ package_nvidia-utils() {
     install -Dm644 "$srcdir/90-nvidia-utils.hook" "$pkgdir/usr/share/libalpm/hooks/90-nvidia-utils.hook"
     
     # install firmware
-    install -D -m644 firmware/gsp.bin "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}/gsp.bin"
-    
+    install -D -m644 firmware/gsp.bin -t "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}/gsp.bin"
+
     create_links
 }
