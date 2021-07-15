@@ -10,7 +10,7 @@
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
 pkgver=470.42.01
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -276,7 +276,7 @@ package_nvidia-utils() {
     install -Dm644 "$srcdir/90-nvidia-utils.hook" "$pkgdir/usr/share/libalpm/hooks/90-nvidia-utils.hook"
     
     # install firmware
-    install -D -m644 firmware/gsp.bin -t "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}/gsp.bin"
+    install -D -m644 firmware/gsp.bin -t "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}"
 
     create_links
 }
