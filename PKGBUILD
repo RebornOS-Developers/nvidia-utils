@@ -10,7 +10,7 @@
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
 pkgver=470.63.01
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -93,7 +93,7 @@ package_opencl-nvidia() {
               'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
               'opencl-nvidia-450xx' 'opencl-nvidia-455xx'
               'opencl-nvidia-460xx' 'opencl-nvidia-465xx')
-    conflicts=('opencl-nvidia-340xx' 'opencl-nvidia-390xx' 
+    conflicts=('opencl-nvidia-340xx' 'opencl-nvidia-390xx'
                'opencl-nvidia-418xx' 'opencl-nvidia-430xx'
                'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
                'opencl-nvidia-450xx' 'opencl-nvidia-455xx'
@@ -203,7 +203,7 @@ package_nvidia-utils() {
 
     # nvvm
     install -D -m755 "libnvidia-nvvm.so.4.0.0" -t "${pkgdir}/usr/lib"
-     
+
     # DEBUG
     install -D -m755 nvidia-debugdump "${pkgdir}/usr/bin/nvidia-debugdump"
 
@@ -273,7 +273,7 @@ package_nvidia-utils() {
 
     # install alpm hook
     install -Dm644 "$srcdir/90-nvidia-utils.hook" "$pkgdir/usr/share/libalpm/hooks/90-nvidia-utils.hook"
-    
+
     # install firmware
     install -D -m644 firmware/gsp.bin -t "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}"
 
