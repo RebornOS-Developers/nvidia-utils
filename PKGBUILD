@@ -132,9 +132,8 @@ package_mhwd-nvidia() {
 
 package_nvidia-utils() {
     pkgdesc="NVIDIA drivers utilities"
-    depends=('xorg-server')
-    optdepends=('gtk3: nvidia-settings'
-                'xorg-server-devel: nvidia-xconfig'
+    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl')
+    optdepends=('xorg-server-devel: nvidia-xconfig'
                 'opencl-nvidia: OpenCL support')
     provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=$pkgver")
     replaces=('nvidia-418xx-utils' 'nvidia-430xx-utils' 'nvidia-435xx-utils'
