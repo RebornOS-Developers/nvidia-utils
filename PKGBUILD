@@ -199,13 +199,6 @@ package_nvidia-utils() {
     # Optical flow
     install -D -m755 "libnvidia-opticalflow.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-opticalflow.so.${pkgver}"
 
-    # NGX
-    install -D -m755 "libnvidia-ngx.so.${pkgver}" -t "${pkgdir}/usr/lib"
-
-    # DLSS
-    install -D -m755 nvidia-ngx-updater -t "${pkgdir}/usr/bin"
-    install -D -m644 {,_}nvngx.dll -t "${pkgdir}/usr/lib/nvidia/wine"
-
     # GBM
     install -D -m755 "libnvidia-allocator.so.${pkgver}" -t "${pkgdir}/usr/lib"
     install -D -m755 libnvidia-egl-gbm.so.1.1.0         -t "${pkgdir}/usr/lib"
