@@ -7,7 +7,7 @@
 
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
-pkgver=470.74
+pkgver=495.29.85
 pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -166,7 +166,6 @@ package_nvidia-utils() {
     install -D -m755 "libnvidia-glsi.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-glsi.so.${pkgver}"
 
     # misc
-    install -D -m755 "libnvidia-ifr.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-ifr.so.${pkgver}"
     install -D -m755 "libnvidia-fbc.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-fbc.so.${pkgver}"
     install -D -m755 "libnvidia-encode.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-encode.so.${pkgver}"
     install -D -m755 "libnvidia-cfg.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-cfg.so.${pkgver}"
@@ -191,16 +190,28 @@ package_nvidia-utils() {
     # PTX JIT Compiler (Parallel Thread Execution (PTX) is a pseudo-assembly language for CUDA)
     install -D -m755 "libnvidia-ptxjitcompiler.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-ptxjitcompiler.so.${pkgver}"
 
+    # NVVM Compiler (JIT link-time-optimization for CUDA)
+    install -D -m755 libnvidia-nvvm.so.*.*.* -t "${pkgdir}/usr/lib"
+
     # raytracing
     install -D -m755 "libnvoptix.so.${pkgver}" "${pkgdir}/usr/lib/libnvoptix.so.${pkgver}"
     install -D -m755 "libnvidia-rtcore.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-rtcore.so.${pkgver}"
-    install -D -m755 "libnvidia-cbl.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-cbl.so.${pkgver}"
 
     # Optical flow
     install -D -m755 "libnvidia-opticalflow.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-opticalflow.so.${pkgver}"
 
-    # nvvm
-    install -D -m755 "libnvidia-nvvm.so.4.0.0" -t "${pkgdir}/usr/lib"
+    # NGX
+    install -D -m755 "libnvidia-ngx.so.${pkgver}" -t "${pkgdir}/usr/lib"
+
+    # DLSS
+    install -D -m755 nvidia-ngx-updater -t "${pkgdir}/usr/bin"
+    install -D -m644 {,_}nvngx.dll -t "${pkgdir}/usr/lib/nvidia/wine"
+
+    # GBM
+    install -D -m755 "libnvidia-allocator.so.${pkgver}" -t "${pkgdir}/usr/lib"
+    install -D -m755 libnvidia-egl-gbm.so.1.1.0         -t "${pkgdir}/usr/lib"
+    install -d -m755 "${pkgdir}/usr/lib/gbm"
+    ln -s "../libnvidia-allocator.so.${pkgver}" "${pkgdir}/usr/lib/gbm/nvidia-drm_gbm.so"
 
     # DEBUG
     install -D -m755 nvidia-debugdump "${pkgdir}/usr/bin/nvidia-debugdump"
