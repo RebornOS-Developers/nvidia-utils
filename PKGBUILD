@@ -91,7 +91,7 @@ package_opencl-nvidia() {
               'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
               'opencl-nvidia-450xx' 'opencl-nvidia-455xx'
               'opencl-nvidia-460xx' 'opencl-nvidia-465xx')
-    conflicts=('opencl-nvidia-340xx' 'opencl-nvidia-390xx' 
+    conflicts=('opencl-nvidia-340xx' 'opencl-nvidia-390xx'
                'opencl-nvidia-418xx' 'opencl-nvidia-430xx'
                'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
                'opencl-nvidia-450xx' 'opencl-nvidia-455xx'
@@ -130,9 +130,8 @@ package_mhwd-nvidia() {
 
 package_nvidia-utils() {
     pkgdesc="NVIDIA drivers utilities"
-    depends=('xorg-server')
-    optdepends=('gtk3: nvidia-settings'
-                'xorg-server-devel: nvidia-xconfig'
+    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl')
+    optdepends=('xorg-server-devel: nvidia-xconfig'
                 'opencl-nvidia: OpenCL support')
     provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=$pkgver")
     replaces=('nvidia-418xx-utils' 'nvidia-430xx-utils' 'nvidia-435xx-utils'
@@ -202,7 +201,7 @@ package_nvidia-utils() {
 
     # nvvm
     install -D -m755 "libnvidia-nvvm.so.4.0.0" -t "${pkgdir}/usr/lib"
-     
+
     # DEBUG
     install -D -m755 nvidia-debugdump "${pkgdir}/usr/bin/nvidia-debugdump"
 
@@ -272,7 +271,7 @@ package_nvidia-utils() {
 
     # install alpm hook
     install -Dm644 "$srcdir/90-nvidia-utils.hook" "$pkgdir/usr/share/libalpm/hooks/90-nvidia-utils.hook"
-    
+
     # install firmware
     install -D -m644 firmware/gsp.bin -t "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}"
 
