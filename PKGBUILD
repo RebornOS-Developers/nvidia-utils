@@ -7,27 +7,25 @@
 
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
-pkgver=495.29.85
+pkgver=495.29.05
 pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
 options=('!strip')
-durl="https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}"
-source=("${durl}/NVIDIA-Linux-x86_64-$pkgver-no-compat32.run"
+_pkg="NVIDIA-Linux-x86_64-${pkgver}"
+source=("https://download.nvidia.com/XFree86/Linux-x86_64/$pkgver/$_pkg.run"
         'mhwd-nvidia'
         'nvidia-utils.sysusers'
         '90-nvidia-utils.hook'
         '10-amdgpu-nvidia-drm-outputclass.conf'
         '10-intel-nvidia-drm-outputclass.conf')
-sha256sums=('b1ab5db6bffd5246fc571ef252ca4406332bd204a12e4063d3fe0939224d0b56'
+sha256sums=('f7254b97d400c692504796496f4e7d8f64e93b1e31c427860a4f219a186f125e'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             'c2396f48835caf7ae60bc17e07eeaf142c8b7074d15d428d6c61d9e38373b8d8'
             '3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3')
-
-_pkg="NVIDIA-Linux-x86_64-$pkgver-no-compat32"
 
 create_links() {
     # create soname links
