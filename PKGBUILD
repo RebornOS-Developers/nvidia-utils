@@ -9,20 +9,19 @@
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
 pkgver=495.44
-pkgrel=2
+pkgrel=3
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
 options=('!strip')
-durl="https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}"
-_pkg="NVIDIA-Linux-x86_64-$pkgver-no-compat32"
-source=("${durl}/$_pkg.run"
+_pkg="NVIDIA-Linux-x86_64-${pkgver}"
+source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
         'mhwd-nvidia'
         'nvidia-utils.sysusers'
         '90-nvidia-utils.hook'
         '10-amdgpu-nvidia-drm-outputclass.conf'
         '10-intel-nvidia-drm-outputclass.conf')
-sha256sums=('31b9c5b03bdff6fbbe3eea8780c240abe1541ba5c5094fadeae622db2d33c6f9'
+sha256sums=('f1876a67815b160a67ef94e16d1b87550e4c302b327d98daec4d71dd5c7f8a48'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             'c2396f48835caf7ae60bc17e07eeaf142c8b7074d15d428d6c61d9e38373b8d8'
@@ -198,8 +197,8 @@ package_nvidia-utils() {
     # NGX
     install -D -m755 nvidia-ngx-updater "${pkgdir}/usr/bin/nvidia-ngx-updater"
     install -D -m755 "libnvidia-ngx.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-ngx.so.${pkgver}"
-#    install -D -m755 _nvngx.dll "${pkgdir}/usr/lib/nvidia/wine/_nvngx.dll"
-#    install -D -m755 nvngx.dll "${pkgdir}/usr/lib/nvidia/wine/nvngx.dll"
+    install -D -m755 _nvngx.dll "${pkgdir}/usr/lib/nvidia/wine/_nvngx.dll"
+    install -D -m755 nvngx.dll "${pkgdir}/usr/lib/nvidia/wine/nvngx.dll"
 
     # Optical flow
     install -D -m755 "libnvidia-opticalflow.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-opticalflow.so.${pkgver}"
