@@ -9,24 +9,24 @@
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
 pkgver=495.44
-pkgrel=3
+pkgrel=4
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
 options=('!strip')
 _pkg="NVIDIA-Linux-x86_64-${pkgver}"
-source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
+source=('10-amdgpu-nvidia-drm-outputclass.conf'
+        '10-intel-nvidia-drm-outputclass.conf'
+        '90-nvidia-utils.hook'
         'mhwd-nvidia'
         'nvidia-utils.sysusers'
-        '90-nvidia-utils.hook'
-        '10-amdgpu-nvidia-drm-outputclass.conf'
-        '10-intel-nvidia-drm-outputclass.conf')
-sha256sums=('f1876a67815b160a67ef94e16d1b87550e4c302b327d98daec4d71dd5c7f8a48'
+        "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run")
+sha256sums=('3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
+            'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3'
+            'c2396f48835caf7ae60bc17e07eeaf142c8b7074d15d428d6c61d9e38373b8d8'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
-            'c2396f48835caf7ae60bc17e07eeaf142c8b7074d15d428d6c61d9e38373b8d8'
-            '3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
-            'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3')
+            'f1876a67815b160a67ef94e16d1b87550e4c302b327d98daec4d71dd5c7f8a48')
 
 create_links() {
     # create soname links
@@ -43,7 +43,6 @@ prepare() {
 
     sh "${_pkg}.run" --extract-only
     cd "${_pkg}"
-
     bsdtar -xf nvidia-persistenced-init.tar.bz2
 
     cd kernel
@@ -252,7 +251,9 @@ package_nvidia-utils() {
 
     # distro specific files must be installed in /usr/share/X11/xorg.conf.d
     install -D -m644 "$srcdir/10-amdgpu-nvidia-drm-outputclass.conf" "$pkgdir/usr/share/X11/xorg.conf.d/10-amdgpu-nvidia-drm-outputclass.conf"
-    install -m644 "$srcdir/10-intel-nvidia-drm-outputclass.conf" "$pkgdir/usr/share/X11/xorg.conf.d/10-intel-nvidia-drm-outputclass.conf"
+    install -D -m644 "$srcdir/10-intel-nvidia-drm-outputclass.conf" "$pkgdir/usr/share/X11/xorg.conf.d/10-intel-nvidia-drm-outputclass.conf"
+
+    install -Dm644 "${srcdir}/nvidia-utils.sysusers" "${pkgdir}/usr/lib/sysusers.d/$pkgname.conf"
 
     # nvidia-settings
     install -D -m755 nvidia-settings "${pkgdir}/usr/bin/nvidia-settings"
