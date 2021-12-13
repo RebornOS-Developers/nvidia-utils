@@ -2,14 +2,14 @@
 # Maintainer: Bernhard Landauer <bernhard[at]manjaro[dot]org>
 
 # Arch credits:
-# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Maintainer: Sven-Hendrik Haase <svenstaro@archlinux.org>
 # Maintainer: Thomas Baechler <thomas@archlinux.org>
 # Contributor: James Rayner <iphitus@gmail.com>
 
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
-pkgver=495.44
-pkgrel=6
+pkgver=495.46
+pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -28,7 +28,7 @@ sha256sums=('3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             '4fbfd461f939f18786e79f8dba5fdb48be9f00f2ff4b1bb2f184dbce42dd6fc3'
-            'f1876a67815b160a67ef94e16d1b87550e4c302b327d98daec4d71dd5c7f8a48')
+            'd83b77d17da0c54667aa5b13d6ea95a5c51304257b1ecf2f8d4a3b5ae31c62f5')
 
 create_links() {
     # create soname links
