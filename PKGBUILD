@@ -9,7 +9,7 @@
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
 pkgver=495.46
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -259,7 +259,6 @@ package_nvidia-utils() {
     install -Dm644 nvidia-settings.1.gz "${pkgdir}/usr/share/man/man1/nvidia-settings.1.gz"
     install -Dm644 nvidia-settings.desktop "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
     install -Dm644 nvidia-settings.png "${pkgdir}/usr/share/pixmaps/nvidia-settings.png"
-    install -Dm755 "libnvidia-gtk2.so.$pkgver" "$pkgdir/usr/lib/libnvidia-gtk2.so.$pkgver"
     install -Dm755 "libnvidia-gtk3.so.$pkgver" "$pkgdir/usr/lib/libnvidia-gtk3.so.$pkgver"
     sed -e 's:__UTILS_PATH__:/usr/bin:' -e 's:__PIXMAP_PATH__:/usr/share/pixmaps:' -i "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
 
