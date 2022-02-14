@@ -9,7 +9,7 @@
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
 pkgver=510.47.03
-pkgrel=4
+pkgrel=5
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -21,6 +21,7 @@ source=('10-amdgpu-nvidia-drm-outputclass.conf'
         'mhwd-nvidia'
         'nvidia-utils.sysusers'
         'nvidia.rules'
+        'nvidia.shutdown'
         "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run")
 sha256sums=('3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3'
@@ -28,6 +29,7 @@ sha256sums=('3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             '4fbfd461f939f18786e79f8dba5fdb48be9f00f2ff4b1bb2f184dbce42dd6fc3'
+            '402b5549cbc7cc7e3d5d64fdff2c6e3c9d246cbf0066410a698e1457ed749172'
             'f2a421dae836318d3c0d96459ccb3af27e90e50c95b0faa4288af76279e5d690')
 
 create_links() {
@@ -262,6 +264,9 @@ package_nvidia-utils() {
     install -Dm644 nvidia-settings.png "${pkgdir}/usr/share/pixmaps/nvidia-settings.png"
     install -Dm755 "libnvidia-gtk3.so.$pkgver" "$pkgdir/usr/lib/libnvidia-gtk3.so.$pkgver"
     sed -e 's:__UTILS_PATH__:/usr/bin:' -e 's:__PIXMAP_PATH__:/usr/share/pixmaps:' -i "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
+
+    # install fix for oldroot unmount
+    install -Dm755 "${srcdir}/nvidia.shutdown" "${pkgdir}/usr/lib/systemd/system-shutdown/nvidia.shutdown"
 
     # install alpm hook
     install -Dm644 "$srcdir/90-nvidia-utils.hook" "$pkgdir/usr/share/libalpm/hooks/90-nvidia-utils.hook"
