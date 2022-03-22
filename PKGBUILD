@@ -8,8 +8,8 @@
 
 pkgbase=nvidia-utils
 pkgname=("nvidia-dkms" "nvidia-utils" "mhwd-nvidia" "opencl-nvidia")
-pkgver=510.54
-pkgrel=2
+pkgver=510.60.02
+pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -30,7 +30,7 @@ sha256sums=('3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             '4fbfd461f939f18786e79f8dba5fdb48be9f00f2ff4b1bb2f184dbce42dd6fc3'
             '402b5549cbc7cc7e3d5d64fdff2c6e3c9d246cbf0066410a698e1457ed749172'
-            '4c20deccae3fe347adfd0e6989a306f9024fdadf831adc1e8e60855675335161')
+            'a800dfc0549078fd8c6e8e6780efb8eee87872e6055c7f5f386a4768ce07e003')
 
 create_links() {
     # create soname links
