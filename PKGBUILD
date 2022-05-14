@@ -98,7 +98,6 @@ package_nvidia-dkms() {
     pkgdesc="NVIDIA drivers - module sources"
     depends=('dkms' "nvidia-utils=$pkgver" 'libglvnd')
     provides=('NVIDIA-MODULE' "nvidia=$pkgver")
-    conflicts=('NVIDIA-MODULE' 'nvidia')
 
     cd ${_pkg}
 
