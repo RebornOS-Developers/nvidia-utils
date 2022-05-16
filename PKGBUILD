@@ -9,7 +9,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-dkms' 'nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=515.43.04
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -72,15 +72,6 @@ package_opencl-nvidia() {
     depends=('zlib')
     optdepends=('opencl-headers: headers necessary for OpenCL development')
     provides=("opencl-nvidia=$pkgver" 'opencl-driver')
-    replaces=('opencl-nvidia-418xx' 'opencl-nvidia-430xx'
-              'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
-              'opencl-nvidia-450xx' 'opencl-nvidia-455xx'
-              'opencl-nvidia-460xx' 'opencl-nvidia-465xx')
-    conflicts=('opencl-nvidia-340xx' 'opencl-nvidia-390xx'
-               'opencl-nvidia-418xx' 'opencl-nvidia-430xx'
-               'opencl-nvidia-435xx' 'opencl-nvidia-440xx'
-               'opencl-nvidia-450xx' 'opencl-nvidia-455xx'
-               'opencl-nvidia-460xx' 'opencl-nvidia-465xx')
     cd $_pkg
 
     # OpenCL
@@ -98,6 +89,7 @@ package_nvidia-dkms() {
     pkgdesc="NVIDIA drivers - module sources"
     depends=('dkms' "nvidia-utils=$pkgver" 'libglvnd')
     provides=('NVIDIA-MODULE' "nvidia=$pkgver")
+    conflicts=('NVIDIA-MODULE' 'nvidia')
 
     cd ${_pkg}
 
@@ -113,11 +105,7 @@ package_nvidia-utils() {
     optdepends=('xorg-server-devel: nvidia-xconfig'
                 'opencl-nvidia: OpenCL support')
     provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=$pkgver")
-    replaces=('nvidia-418xx-utils' 'nvidia-430xx-utils' 'nvidia-435xx-utils'
-              'nvidia-440xx-utils' 'nvidia-450xx-utils' 'nvidia-455xx-utils')
-    conflicts=('nvidia-libgl' 'nvidia-340xx-utils' 'nvidia-390xx-utils'
-               'nvidia-418xx-utils' 'nvidia-430xx-utils' 'nvidia-435xx-utils'
-               'nvidia-440xx-utils' 'nvidia-450xx-utils' 'nvidia-455xx-utils')
+    conflicts=('nvidia-libgl')
     replaces=('nvidia-libgl')
     install="${pkgname}.install"
 
@@ -282,10 +270,6 @@ package_nvidia-utils() {
 package_mhwd-nvidia() {
     pkgdesc="MHWD module-ids for nvidia $pkgver"
     arch=('any')
-    replaces=('mhwd-nvidia-418xx' 'mhwd-nvidia-430xx'
-              'mhwd-nvidia-435xx' 'mhwd-nvidia-440xx'
-              'mhwd-nvidia-450xx' 'mhwd-nvidia-455xx'
-              'mhwd-nvidia-460xx' 'mhwd-nvidia-465xx')
 
     install -d "$pkgdir/var/lib/mhwd/ids/pci/"
 
