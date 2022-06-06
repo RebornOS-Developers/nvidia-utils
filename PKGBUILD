@@ -9,7 +9,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-dkms' 'nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=515.48.07
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -232,7 +232,9 @@ package_nvidia-utils() {
     install -Dm755 systemd/system-sleep/nvidia "${pkgdir}/usr/lib/systemd/system-sleep/nvidia"
     install -Dm755 systemd/nvidia-sleep.sh "${pkgdir}/usr/bin/nvidia-sleep.sh"
     install -Dm755 nvidia-powerd "${pkgdir}/usr/bin/nvidia-powerd"
-    install -Dm644 nvidia-dbus.conf "${pkgdir}"/usr/share/dbus-1/system.d/nvidia-dbus.conf
+
+    # Not installing DBUS file for the time being, see https://bugs.archlinux.org/task/74894
+    #install -Dm644 nvidia-dbus.conf "${pkgdir}"/usr/share/dbus-1/system.d/nvidia-dbus.conf
 
     # distro specific files must be installed in /usr/share/X11/xorg.conf.d
     install -Dm644 "$srcdir/10-amdgpu-nvidia-drm-outputclass.conf" "$pkgdir/usr/share/X11/xorg.conf.d/10-amdgpu-nvidia-drm-outputclass.conf"
