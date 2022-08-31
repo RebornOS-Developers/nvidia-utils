@@ -9,7 +9,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-dkms' 'nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=515.65.01
-pkgrel=2
+pkgrel=3
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -22,14 +22,16 @@ source=('10-amdgpu-nvidia-drm-outputclass.conf'
         'nvidia-utils.sysusers'
         'nvidia.rules'
 #        'nvidia.shutdown'
-        "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run")
+        "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
+        'linux60.patch')
 sha256sums=('3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3'
             'c2396f48835caf7ae60bc17e07eeaf142c8b7074d15d428d6c61d9e38373b8d8'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             '4fbfd461f939f18786e79f8dba5fdb48be9f00f2ff4b1bb2f184dbce42dd6fc3'
-            '0492ddc5b5e65aa00cbc762e8d6680205c8d08e103b7131087a15126aee495e9')
+            '0492ddc5b5e65aa00cbc762e8d6680205c8d08e103b7131087a15126aee495e9'
+            '1a88816f2a7a3cda510b9de5a9903edb4eae7e3a3842669f612019833ca7ba25')
 
 create_links() {
     # create soname links
@@ -45,6 +47,8 @@ prepare() {
     sh "${_pkg}.run" --extract-only
     cd "${_pkg}"
     bsdtar -xf nvidia-persistenced-init.tar.bz2
+
+    patch -Np1 -i ../linux60.patch
 
     cd kernel
 
