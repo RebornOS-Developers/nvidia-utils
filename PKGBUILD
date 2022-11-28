@@ -8,8 +8,8 @@
 
 pkgbase=nvidia-utils
 pkgname=('nvidia-dkms' 'nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
-pkgver=520.56.06
-pkgrel=2
+pkgver=525.60.11
+pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -22,16 +22,14 @@ source=('10-amdgpu-nvidia-drm-outputclass.conf'
         'nvidia-utils.sysusers'
         'nvidia.rules'
 #        'nvidia.shutdown'
-        "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
-        'linux60.patch')
+        "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run")
 sha256sums=('3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3'
             'c2396f48835caf7ae60bc17e07eeaf142c8b7074d15d428d6c61d9e38373b8d8'
             'ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             '4fbfd461f939f18786e79f8dba5fdb48be9f00f2ff4b1bb2f184dbce42dd6fc3'
-            '51674b00bed6766ec43d41ca84d18d693906234f85519069b6a341f76c113c46'
-            '1a88816f2a7a3cda510b9de5a9903edb4eae7e3a3842669f612019833ca7ba25')
+            '816ee6c2e0813ccc3d4a7958f71fc49a37c60efe1d51d6146c1ce72403983d5d')
 
 create_links() {
     # create soname links
@@ -47,8 +45,6 @@ prepare() {
     sh "${_pkg}.run" --extract-only
     cd "${_pkg}"
     bsdtar -xf nvidia-persistenced-init.tar.bz2
-
-    patch -Np1 -i ../linux60.patch
 
     cd kernel
 
@@ -127,7 +123,7 @@ package_nvidia-utils() {
     ln -sr "${pkgdir}/usr/lib/libnvidia-allocator.so.${pkgver}" "${pkgdir}/usr/lib/gbm/nvidia-drm_gbm.so"
 
     # firmware
-    install -Dm644 firmware/gsp.bin "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}/gsp.bin"
+    install -Dm644 firmware/*.bin -t "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}/"
 
     # GLX extension module for X
     install -Dm755 "libglxserver_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/nvidia/xorg/libglxserver_nvidia.so.${pkgver}"
