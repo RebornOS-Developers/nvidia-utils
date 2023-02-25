@@ -9,7 +9,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-dkms' 'nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=525.89.02
-pkgrel=2
+pkgrel=3
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -276,6 +276,7 @@ package_nvidia-utils() {
 package_mhwd-nvidia() {
     pkgdesc="MHWD module-ids for nvidia $pkgver"
     arch=('any')
+    depends=('mhwd')
 
     install -d "$pkgdir/var/lib/mhwd/ids/pci/"
 
