@@ -9,7 +9,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-dkms' 'nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=530.41.03
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -22,7 +22,6 @@ source=('10-amdgpu-nvidia-drm-outputclass.conf'
         'mhwd-nvidia'
         'nvidia-utils.sysusers'
         'nvidia.rules'
-#        'nvidia.shutdown'
         "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run")
 sha256sums=('3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3'
@@ -102,10 +101,10 @@ package_nvidia-dkms() {
 
 package_nvidia-utils() {
     pkgdesc="NVIDIA drivers utilities"
-    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl')
+    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl' 'nvidia-settings')
     optdepends=('xorg-server-devel: nvidia-xconfig'
                 'opencl-nvidia: OpenCL support')
-    provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=$pkgver")
+    provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl')
     conflicts=('nvidia-libgl')
     replaces=('nvidia-libgl')
     install="${pkgname}.install"
@@ -125,7 +124,7 @@ package_nvidia-utils() {
     ln -sr "${pkgdir}/usr/lib/libnvidia-allocator.so.${pkgver}" "${pkgdir}/usr/lib/gbm/nvidia-drm_gbm.so"
 
     # firmware
-    install -Dm644 firmware/*.bin -t "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}/"
+    install -Dm644 -t "${pkgdir}/usr/lib/firmware/nvidia/${pkgver}/" firmware/*.bin
 
     # GLX extension module for X
     install -Dm755 "libglxserver_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/nvidia/xorg/libglxserver_nvidia.so.${pkgver}"
@@ -192,7 +191,7 @@ package_nvidia-utils() {
     # Optical flow
     install -Dm755 "libnvidia-opticalflow.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-opticalflow.so.${pkgver}"
 
-    # DEBUG
+    # Debug
     install -Dm755 nvidia-debugdump "${pkgdir}/usr/bin/nvidia-debugdump"
 
     # nvidia-xconfig
@@ -249,23 +248,6 @@ package_nvidia-utils() {
 
     echo "blacklist nouveau" | install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modprobe.d/${pkgname}.conf"
     echo "nvidia-uvm" | install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modules-load.d/${pkgname}.conf"
-
-    # nvidia-settings
-    install -Dm755 nvidia-settings "${pkgdir}/usr/bin/nvidia-settings"
-    install -Dm644 nvidia-settings.1.gz "${pkgdir}/usr/share/man/man1/nvidia-settings.1.gz"
-    install -Dm644 nvidia-settings.desktop "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
-    install -Dm644 nvidia-settings.png "${pkgdir}/usr/share/pixmaps/nvidia-settings.png"
-    install -Dm755 "libnvidia-gtk3.so.${pkgver}" "$pkgdir/usr/lib/libnvidia-gtk3.so.${pkgver}"
-    install -Dm755 "libnvidia-wayland-client.so.$pkgver" "$pkgdir/usr/lib/libnvidia-wayland-client.so.$pkgver"
-    sed \
-        -e 's:__UTILS_PATH__:/usr/bin:' \
-        -e 's:__PIXMAP_PATH__:/usr/share/pixmaps:' \
-        -e 's/__NVIDIA_SETTINGS_DESKTOP_CATEGORIES__/Settings;HardwareSettings;/' \
-        -e 's/Icon=.*/Icon=nvidia-settings/' \
-        -i "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
-
-    # install fix for oldroot unmount
-#    install -Dm755 "${srcdir}/nvidia.shutdown" "${pkgdir}/usr/lib/systemd/system-shutdown/nvidia.shutdown"
 
     # install alpm hook
     install -Dm644 "$srcdir/90-nvidia-utils.hook" "$pkgdir/usr/share/libalpm/hooks/90-nvidia-utils.hook"
