@@ -10,7 +10,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-dkms' 'nvidia-utils' 'mhwd-nvidia' 'opencl-nvidia')
 pkgver=530.41.03
-pkgrel=3
+pkgrel=4
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -71,7 +71,7 @@ package_opencl-nvidia() {
     pkgdesc="OpenCL implemention for NVIDIA"
     depends=('zlib')
     optdepends=('opencl-headers: headers necessary for OpenCL development')
-    provides=("opencl-nvidia=$pkgver" 'opencl-driver')
+    provides=("opencl-nvidia=${pkgver}" 'opencl-driver')
 
     cd "$_pkg"
 
@@ -88,8 +88,8 @@ package_opencl-nvidia() {
 
 package_nvidia-dkms() {
     pkgdesc="NVIDIA drivers - module sources"
-    depends=('dkms' "nvidia-utils=$pkgver" 'libglvnd')
-    provides=('NVIDIA-MODULE' "nvidia=$pkgver")
+    depends=('dkms' "nvidia-utils=${pkgver}" 'libglvnd')
+    provides=('NVIDIA-MODULE' "nvidia=${pkgver}")
     conflicts=('NVIDIA-MODULE' 'nvidia')
 
     cd ${_pkg}
@@ -102,10 +102,11 @@ package_nvidia-dkms() {
 
 package_nvidia-utils() {
     pkgdesc="NVIDIA drivers utilities"
-    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl' 'nvidia-settings')
-    optdepends=('xorg-server-devel: nvidia-xconfig'
-                'opencl-nvidia: OpenCL support')
-    provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=$pkgver")
+    depends=('xorg-server' 'libglvnd' 'egl-wayland')
+    optdepends=("nvidia-settings=${pkgver}: configuration tool"
+                'xorg-server-devel: nvidia-xconfig'
+                "opencl-nvidia=${pkgver}: OpenCL support")
+    provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=${pkgver}")
     conflicts=('nvidia-libgl')
     replaces=('nvidia-libgl')
     install="${pkgname}.install"
@@ -257,7 +258,7 @@ package_nvidia-utils() {
 }
 
 package_mhwd-nvidia() {
-    pkgdesc="MHWD module-ids for nvidia $pkgver"
+    pkgdesc="MHWD module-ids for nvidia ${pkgver}"
     arch=('any')
     depends=('mhwd')
 
